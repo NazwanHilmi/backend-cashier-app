@@ -6,18 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class ProductRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     public function rules(): array
     {
         return [
-            'category_id' => 'required',
-            'name' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'tag' => 'required',
-            'images' => 'required'
-
+            'email'     => 'required',
+            'password'  => 'required',
         ];
     }
 

@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('pelanggan', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 50);
+            $table->string('nama', 50);
             $table->string('email', 255);
-            $table->string('nomor_telepon');
+            $table->string('nomor_telepon', 12);
             $table->text('alamat');
             $table->timestamps();
         });

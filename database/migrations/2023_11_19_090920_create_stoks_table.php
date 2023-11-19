@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stok', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('menu_id');
-            $table->integer('jumlah')->default(0);
+            $table->double('jumlah', 5);
             $table->timestamps();
         });
     }

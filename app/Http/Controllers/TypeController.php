@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Stok;
-use App\Http\Requests\StokRequest;
+use App\Models\Type;
+use App\Http\Requests\TypeRequest;
 use Illuminate\Http\Request;
 
-class StokController extends Controller
+class TypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class StokController extends Controller
     public function index()
     {
         try {
-            $data = Stok::get();
+            $data = Type::get();
             return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
         } catch (Exception | PDOException $e) {
             return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
@@ -32,10 +32,10 @@ class StokController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StokRequest $request)
+    public function store(TypeRequest $request)
     {
         try {
-            $data = Stok::create($request->all());
+            $data = Type::create($request->all());
             return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
         } catch (Exception | PDOException $e) {
             return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
@@ -45,7 +45,7 @@ class StokController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Stok $stok)
+    public function show(Type $type)
     {
         //
     }
@@ -53,7 +53,7 @@ class StokController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Stok $stok)
+    public function edit(Type $type)
     {
         //
     }
@@ -61,10 +61,10 @@ class StokController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StokRequest $request, Stok $stok)
+    public function update(TypeRequest $request, Type $type)
     {
         try {
-            $data = $stok->update($request->all());
+            $data = $type->update($request->all());
             return response()->json(['status'=>true, 'message' => 'Update data succesfully', 'data' => $data]);
         } catch (Exception | PDOException $e) {
             return response()->json(['status'=> false, 'message' => 'Failed to update data']);
@@ -74,10 +74,10 @@ class StokController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Stok $stok)
+    public function destroy(Type $type)
     {
         try {
-            $data = $stok->delete();
+            $data = $type->delete();
             return response()->json(['status'=>true, 'message' => 'data has been delete', 'data' => $data]);
         } catch (Exception | PDOException $e) {
             return response()->json(['status'=> false, 'message' => 'Failed to delete data']);

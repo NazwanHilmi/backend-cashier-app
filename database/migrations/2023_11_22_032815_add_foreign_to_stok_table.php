@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('meja', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('nomor_meja', 3);
-            $table->double('kapasitas', 3);
-            $table->enum('status', ['Tersedia', 'Terpakai']);
-            $table->timestamps();
+        Schema::table('stok', function (Blueprint $table) {
+            $table
+                ->foreign('menu_id')
+                ->references('id')
+                ->on('menu')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
-
     }
 
     /**
@@ -26,6 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('meja');
+        Schema::table('stok', function (Blueprint $table) {
+            //
+        });
     }
 };

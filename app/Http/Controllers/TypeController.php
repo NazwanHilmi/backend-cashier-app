@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Type;
 use App\Http\Requests\TypeRequest;
-use Illuminate\Http\Request;
 
 class TypeController extends Controller
 {
@@ -47,7 +46,7 @@ class TypeController extends Controller
      */
     public function show(Type $type)
     {
-        //
+
     }
 
     /**
@@ -65,9 +64,9 @@ class TypeController extends Controller
     {
         try {
             $data = $type->update($request->all());
-            return response()->json(['status'=>true, 'message' => 'Update data succesfully', 'data' => $data]);
+            return response()->json(['status'=>true, 'message' => 'Update Data berhasil', 'data' => $data]);
         } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Failed to update data']);
+            return response()->json(['status'=> false, 'message' => 'Gagal update data']);
         }
     }
 
@@ -80,7 +79,7 @@ class TypeController extends Controller
             $data = $type->delete();
             return response()->json(['status'=>true, 'message' => 'data has been delete', 'data' => $data]);
         } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Failed to delete data']);
+            return response()->json(['status'=> false, 'message' => 'Gagal delete data']);
         }
     }
 }

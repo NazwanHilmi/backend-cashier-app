@@ -15,8 +15,8 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->date('tanggal');
             $table->double('total_harga');
-            $table->enum('metode_pembayaran', ['cash', 'transfer', 'e_wallet']);
-            $table->string('keterangan', 255);
+            $table->unsignedBigInteger('payment_method_id');
+            $table->string('note', 255);
             $table->timestamps();
         });
     }

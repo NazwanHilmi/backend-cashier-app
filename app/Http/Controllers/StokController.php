@@ -3,22 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stok;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StokRequest;
+use App\Http\Resources\StokCollection;
+use App\Http\Resources\StokResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class StokController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $data = Stok::get();
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+		$stok = Stok::all();
+
+		$data = new StokCollection($stok);
+
+		return response()->json([
+			'success' => true,
+			'data' => $data,
+		]);
     }
 
     /**
@@ -34,53 +37,43 @@ class StokController extends Controller
      */
     public function store(StokRequest $request)
     {
-        try {
-            $data = Stok::create($request->all());
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+        $validated = $request->validated();
+
+		$stok = Stok::create($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Stok succesfully added',
+		]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Stok $stok)
+    public function show(Request $request, Stok $stok): StokResource
     {
-        //
+        return new StokResource($stok);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Stok $stok)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(StokRequest $request, Stok $stok)
     {
-        try {
-            $data = $stok->update($request->all());
-            return response()->json(['status'=>true, 'message' => 'Update data succesfully', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Failed to update data']);
-        }
+        $validated = $request->validated();
+
+		$stok->update($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Stok succesfully update',
+		]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Stok $stok)
+    public function destroy(Request $request, Stok $stok)
     {
-        try {
-            $data = $stok->delete();
-            return response()->json(['status'=>true, 'message' => 'data has been delete', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Failed to delete data']);
-        }
+        $stok->delete();
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Stok succesfully delete',
+		]);
     }
 }

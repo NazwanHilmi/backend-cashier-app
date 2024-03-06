@@ -2,23 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\CategoryCollection;
+use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(Request $request)
     {
-        try {
-            $data = Category::get();
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+        $category = Category::all();
+
+		$data = new CategoryCollection($category);
+
+		return response()->json([
+			'success' => true,
+			'data' => $data,
+		]);
     }
 
     /**
@@ -34,12 +38,14 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        try {
-            $data = Category::create($request->all());
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+		$validated = $request->validated();
+
+		$category = Category::create($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Kategori berhasil ditambahkan',
+		]);
     }
 
     /**
@@ -47,7 +53,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-
+        return new CategoryResource($category);
     }
 
     /**
@@ -61,26 +67,28 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CategoryRequest $request, Category $category)
-    {
-        try {
-            $data = $category->update($request->all());
-            return response()->json(['status'=>true, 'message' => 'Update Data berhasil', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal update data']);
-        }
-    }
+    public function update(CategoryRequest $request,Category $category) {
 
-    /**
-     * Remove the specified resource from storage.
-     */
+		$validated = $request->validated();
+
+		$category->update($validated);
+
+		$updated_category = new CategoryResource($category);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Kategori berhasil diupdate',
+			'data' => $updated_category,
+		]);
+	}
+
     public function destroy(Category $category)
     {
-        try {
-            $data = $category->delete();
-            return response()->json(['status'=>true, 'message' => 'data has been delete', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal delete data']);
-        }
-    }
+        $category->delete();
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Kategori berhasil dihapus',
+		]);
+	}
 }

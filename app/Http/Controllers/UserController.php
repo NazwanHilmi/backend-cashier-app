@@ -2,67 +2,68 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request) : UserCollection
     {
+        $users = User::all();
 
+		return new UserCollection($users);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(UserRequest $request)
     {
-        try {
-            $data = User::create($request->all());
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal input data']);
-        }
+        $validated = $request->validated();
+
+		$validated['password'] = Hash::make($validated['password']);
+
+		$user = User::create($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'User succesfully added',
+		]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
+    public function show(Request $request, User $user) : UserResource {
 
+        return new UserResource($user);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UserRequest $request, User $user)
     {
+        $validated = $request->validated();
 
+		if (empty($validated['password'])) {
+			unset($validated['password']);
+		} else {
+			$validated['password'] = Hash::make($validated['password']);
+		}
+
+		$user->update($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'User succesfully update',
+		]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(User $user)
     {
+		$user->delete();
 
+		return response()->json([
+			'success' => true,
+			'message' => 'User succesfully delete ',
+		]);
     }
 }

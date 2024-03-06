@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Type;
+use App\Http\Resources\TypeCollection;
+use App\Http\Resources\TypeResource;
 use App\Http\Requests\TypeRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TypeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $data = Type::get();
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+        $type = Type::all();
+
+		$data = new TypeCollection($type);
+		return response()->json([
+			'success' => 'true',
+			'data' => $data,
+		]);
     }
 
     /**
@@ -33,21 +36,23 @@ class TypeController extends Controller
      */
     public function store(TypeRequest $request)
     {
-        try {
-            $data = Type::create($request->all());
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+        $validated = $request->validated();
+
+		$type = Type::create($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Jenis berhasil ditambahkan',
+		]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Type $type)
-    {
+    public function show(Request $request, Type $type): TypeResource {
 
-    }
+		return new TypeResource($type);
+	}
 
     /**
      * Show the form for editing the specified resource.
@@ -62,12 +67,17 @@ class TypeController extends Controller
      */
     public function update(TypeRequest $request, Type $type)
     {
-        try {
-            $data = $type->update($request->all());
-            return response()->json(['status'=>true, 'message' => 'Update Data berhasil', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal update data']);
-        }
+		$validated = $request->validated();
+
+		$type->update($validated);
+
+		$updatedType = new TypeResource($type);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Jenis berhasil diupdate',
+			'data' => $updatedType,
+		]);
     }
 
     /**
@@ -75,11 +85,11 @@ class TypeController extends Controller
      */
     public function destroy(Type $type)
     {
-        try {
-            $data = $type->delete();
-            return response()->json(['status'=>true, 'message' => 'data has been delete', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal delete data']);
-        }
+        $type->delete();
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Jenis berhasil dihapus',
+		]);
     }
 }

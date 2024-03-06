@@ -4,82 +4,70 @@ namespace App\Http\Controllers;
 
 use App\Models\Meja;
 use App\Http\Requests\MejaRequest;
+use App\Http\Resources\MejaCollection;
+use App\Http\Resources\MejaResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class MejaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $data = Meja::get();
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+		$search = $request->get('search', '');
+
+		$meja = Meja::all();
+
+		$data = new MejaCollection($meja);
+
+		return response()->json([
+			'success' => true,
+			'data' => $data,
+		]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(MejaRequest $request)
     {
-        try {
-            $data = Meja::create($request->all());
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+
+		$validated = $request->validated();
+
+		$meja = Meja::create($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Meja berhasil ditambahkan',
+		]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Meja $meja)
-    {
-        //
-    }
+	public function show(Request $request, Table $table): MejaResource {
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Meja $meja)
-    {
-        //
-    }
+		return new MejaResource($meja);
+	}
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(MejaRequest $request, Meja $meja)
     {
-        try {
-            $data = $meja->update($request->all());
-            return response()->json(['status'=>true, 'message' => 'Update Data berhasil', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal update data']);
-        }
+		$validated = $request->validated();
+
+		$meja->update($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Meja berhasil diupdate',
+		]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Meja $meja)
+    public function destroy(Request $request, Meja $meja)
     {
-        try {
-            $data = $meja->delete();
-            return response()->json(['status'=>true, 'message' => 'data has been delete', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal delete data']);
-        }
+		$meja->delete();
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Meja berhasil dihapus',
+		]);
     }
 }

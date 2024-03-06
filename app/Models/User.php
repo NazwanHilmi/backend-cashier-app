@@ -15,8 +15,12 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'address',
         'email',
+        'phone',
         'password',
+        'role_id'
+
     ];
 
     protected $hidden = [
@@ -28,4 +32,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function transaksi() {
+        return $this->hasMany(Transaksi::class, 'transaksi_id');
+    }
+
+    public function isSuperAdmin(): bool {
+        return in_array($this->email, config('auth.super_admins'));
+    }
+
+    public function role(){
+        return $this->belongsTo(Role::class);
+    }
+
+    public function getRole(){
+        return $this->role->name;
+    }
 }

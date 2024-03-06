@@ -14,7 +14,7 @@ class MenuRequest extends FormRequest
             'nama_menu' => 'required',
             'harga'     => 'required|numeric',
             'deskripsi'  => 'required',
-            'jenis_id' => 'required',
+            'type_id' => 'required',
         ];
     }
 

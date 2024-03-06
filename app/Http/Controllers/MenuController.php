@@ -4,20 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Http\Requests\MenuRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\MenuCollection;
+use App\Http\Resources\MenuResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $data = Menu::get();
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+		$menu = Menu::all();
+
+
+
+		return response()->json([
+			'success' => true,
+			'data' => $data,
+		]);
     }
 
     /**
@@ -33,53 +41,72 @@ class MenuController extends Controller
      */
     public function store(MenuRequest $request)
     {
-        try {
-            $data = Menu::create($request->all());
-            return response()->json(['status'=>true, 'message' => 'success', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Gagal menampilkan data']);
-        }
+		try {
+			$validated = $request->validated();
+			if ($request->hasFile('image')) {
+				$validated['image'] = $request->file('image')->store('public');
+			}
+
+			$menu = Menu::create($validated);
+
+			return response()->json([
+				'success' => true,
+				'message' => 'Menu succesfully added',
+			]);
+		} catch (Exception $e) {
+			return response()->json([
+				'message' => $e->getMessage(),
+			]);
+
+            DB::rollBack();
+		}
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Menu $menu)
     {
-        //
+        return new MenuResource($menu);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Menu $menu)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(MenuRequest $request, Menu $menu)
     {
-        try {
-            $data = $menu->update($request->all());
-            return response()->json(['status'=>true, 'message' => 'Update data succesfully', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Failed to update data']);
-        }
+        $validated = $request->validated();
+		if ($request->hasFile('image')) {
+			if ($menu->image) {
+				Storage::delete($menu->image);
+			}
+
+			$validated['image'] = $request->file('image')->store('public');
+		}
+
+		$menu->update($validated);
+
+		$data = new MenuResource($menu);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Menu succesfully update',
+		]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Menu $menu)
+    public function destroy(Request $request, Menu $menu)
     {
-        try {
-            $data = $menu->delete();
-            return response()->json(['status'=>true, 'message' => 'data has been delete', 'data' => $data]);
-        } catch (Exception | PDOException $e) {
-            return response()->json(['status'=> false, 'message' => 'Failed to delete data']);
-        }
-    }
+		if ($menu->image) {
+			Storage::delete($menu->image);
+		}
+
+		$menu->delete();
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Menu succesfully delete',
+		]);
+	}
 }

@@ -25,6 +25,13 @@ return new class extends Migration
                 ->on('transaksi')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+
+            $table
+                ->foreign('product_id')
+                    ->references('id')
+                    ->on('product')
+                    ->onUpdate('CASCADE')
+                    ->onDelete('CASCADE');
         });
     }
 
@@ -34,7 +41,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('detail_transaksi', function (Blueprint $table) {
-            //
+            $table->dropForeign(['menu_id']);
+            $table->dropForeign(['transaction_id']);
         });
     }
 };

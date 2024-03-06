@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('menu', function (Blueprint $table) {
             $table
-                ->foreign('jenis_id')
+                ->foreign('type_id')
                 ->references('id')
                 ->on('type')
                 ->onUpdate('cascade')
@@ -27,7 +27,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('menu', function (Blueprint $table) {
-            //
+			$table->dropForeign(['type_id']);
+			$table->dropForeign(['stok_id']);
         });
     }
 };

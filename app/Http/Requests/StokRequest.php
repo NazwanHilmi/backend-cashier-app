@@ -11,8 +11,8 @@ class StokRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'menu_id' => 'required',
             'jumlah' => 'required|numeric',
+            'menu_id' => 'required',
         ];
     }
 

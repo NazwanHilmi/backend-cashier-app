@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('stok', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('menu_id');
             $table->double('jumlah', 5);
+            $table->unsignedBigInteger('menu_id');
             $table->timestamps();
         });
     }

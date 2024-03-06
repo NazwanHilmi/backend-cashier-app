@@ -2,65 +2,62 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DetailTransaksiRequest;
+use App\Http\Resources\DetailTransaksiCollection;
+use App\Http\Resources\DetailTransaksiResource;
 use App\Models\DetailTransaksi;
-use App\Http\Requests\StoreDetailTransaksiRequest;
-use App\Http\Requests\UpdateDetailTransaksiRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DetailTransaksiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request) : DetailTransaksiCollection
     {
-        //
+        $detailTransaksi = DetailTransaksi::all();
+
+		return new DetailTransaksiCollection($detailTransaksi);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(DetailTransaksiRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+		$detailTransaksi = DetailTransaksi::create($validated);
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Transaction detail succesfully added',
+		]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreDetailTransaksiRequest $request)
+    public function show(Request $request, DetailTransaksi $detailTransaksi) : DetailTransaksiResource
     {
-        //
+        return new DetailTransaksiResource($detailTransaksi);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(DetailTransaksi $detailTransaksi)
+    public function update(DetailTransaksiRequest $request, DetailTransaksi $detailTransaksi)
     {
-        //
-    }
+        $validated = $request->validated();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(DetailTransaksi $detailTransaksi)
-    {
-        //
-    }
+		$detailTransaksi->update($validated);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateDetailTransaksiRequest $request, DetailTransaksi $detailTransaksi)
-    {
-        //
+		return response()->json([
+			'success' => true,
+            'message' => 'Transaction detail succesfully update',
+		]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DetailTransaksi $detailTransaksi)
+    public function destroy(Request $request, DetailTransaksi $detailTransaksi)
     {
-        //
+        $detailTransaksi->delete();
+
+		return response()->json([
+			'success' => true,
+            'message' => 'Transaction detail succesfully delete',
+		]);
     }
 }

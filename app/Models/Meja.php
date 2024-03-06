@@ -11,4 +11,9 @@ class Meja extends Model
 
     protected $table = 'meja';
     protected $fillable = ['nomor_meja', 'kapasitas', 'status'] ;
+
+    public function orders()
+    {
+        return $this->hasMany(Pemesanan::class, 'meja_id');
+    }
 }

@@ -123,8 +123,9 @@ class ProductController extends Controller
 
             $data = Product::all();
 
-            $pdf = Pdf::loadView( 'pdf.export', compact( 'data' ) );
+            $pdf = Pdf::loadView( 'pdf.product', compact( 'data' ) );
             return $pdf->download('Produk.pdf');
+
 
         } catch ( Exception $e ) {
             return response()->json( [
@@ -133,7 +134,6 @@ class ProductController extends Controller
                 'error' => $e->getMessage()
             ] );
         }
-
     }
 
     public function importExcel( Request $request ) {
@@ -153,6 +153,11 @@ class ProductController extends Controller
                 'error' => $e->getMessage()
             ] );
         }
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ProductExport, 'product.xlsx');
     }
 
 }

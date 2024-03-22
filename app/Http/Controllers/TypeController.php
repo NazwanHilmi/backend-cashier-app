@@ -9,6 +9,9 @@ use App\Http\Resources\TypeResource;
 use App\Http\Requests\TypeRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;;
 
 class TypeController extends Controller
 {
@@ -23,17 +26,6 @@ class TypeController extends Controller
 		]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(TypeRequest $request)
     {
         $validated = $request->validated();
@@ -46,25 +38,16 @@ class TypeController extends Controller
 		]);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Request $request, Type $type): TypeResource {
 
 		return new TypeResource($type);
 	}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Type $type)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(TypeRequest $request, Type $type)
     {
 		$validated = $request->validated();
@@ -91,5 +74,23 @@ class TypeController extends Controller
 			'success' => true,
 			'message' => 'Jenis berhasil dihapus',
 		]);
+    }
+
+    public function exportPdf() {
+        try {
+
+            $data = Type::all();
+
+            $pdf = Pdf::loadView( 'pdf.type', compact( 'data' ) );
+            return $pdf->download('Type.pdf');
+
+
+        } catch ( Exception $e ) {
+            return response()->json( [
+                'success' => false,
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ] );
+        }
     }
 }

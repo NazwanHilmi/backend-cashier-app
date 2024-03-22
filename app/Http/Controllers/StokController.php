@@ -9,6 +9,9 @@ use App\Http\Resources\StokCollection;
 use App\Http\Resources\StokResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;;
 
 class StokController extends Controller
 {
@@ -64,9 +67,6 @@ class StokController extends Controller
 		]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request, Stok $stok)
     {
         $stok->delete();
@@ -75,5 +75,23 @@ class StokController extends Controller
 			'success' => true,
 			'message' => 'Stok succesfully delete',
 		]);
+    }
+
+    public function exportPdf() {
+        try {
+
+            $data = Stok::all();
+
+            $pdf = Pdf::loadView( 'pdf.stok', compact( 'data' ) );
+            return $pdf->download('Stok.pdf');
+
+
+        } catch ( Exception $e ) {
+            return response()->json( [
+                'success' => false,
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ] );
+        }
     }
 }

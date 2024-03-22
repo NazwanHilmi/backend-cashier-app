@@ -9,6 +9,9 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -91,4 +94,22 @@ class CategoryController extends Controller
 			'message' => 'Kategori berhasil dihapus',
 		]);
 	}
+
+    public function exportPdf() {
+        try {
+
+            $data = Category::all();
+
+            $pdf = Pdf::loadView( 'pdf.category', compact( 'data' ) );
+            return $pdf->download('Category.pdf');
+
+
+        } catch ( Exception $e ) {
+            return response()->json( [
+                'success' => false,
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ] );
+        }
+    }
 }

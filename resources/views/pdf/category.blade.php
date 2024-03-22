@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Produk Titipan</title>
+<title>Produk Titipan</title>
     <style>
         * {
             margin: 0;
@@ -57,29 +57,21 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>Produk Titipan</h1>
+        <h1>Kategori</h1>
     </div>
     <div class="content">
         <table cellpadding="0" cellspacing="0">
             <thead>
             <tr>
                 <th>No</th>
-                <th>Nama Produk</th>
-                <th>Nama Supplier</th>
-                <th>Harga Beli</th>
-                <th>Harga Jual</th>
-                <th>Stok</th>
+                <th>Nama Kategori</th>
             </tr>
             </thead>
             <tbody>
-            @foreach ($data as $product)
+            @foreach ($data as $category)
                 <tr>
                     <th>{{ $loop->index + 1 }}</th>
-                    <td>{{ $product->name }}</td>
-                    <td>{{ $product->supplier_name }}</td>
-                    <td>{{ $product->purchase_price }}</td>
-                    <td>{{ $product->sell_price }}</td>
-                    <td>{{ $product->stock }}</td>
+                    <td class='text-center'>{{ $category->nama }}</td>
                 </tr>
             @endforeach
             </tbody>

@@ -10,6 +10,9 @@ use App\Http\Resources\MenuResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;;
 
 class MenuController extends Controller
 {
@@ -20,7 +23,7 @@ class MenuController extends Controller
     {
 		$menu = Menu::all();
 
-
+		$data = new MenuCollection($menu);
 
 		return response()->json([
 			'success' => true,
@@ -28,17 +31,6 @@ class MenuController extends Controller
 		]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(MenuRequest $request)
     {
 		try {
@@ -109,4 +101,22 @@ class MenuController extends Controller
 			'message' => 'Menu succesfully delete',
 		]);
 	}
+
+    public function exportPdf() {
+        try {
+
+            $data = Menu::all();
+
+            $pdf = Pdf::loadView( 'pdf.menu', compact( 'data' ) );
+            return $pdf->download('Menu.pdf');
+
+
+        } catch ( Exception $e ) {
+            return response()->json( [
+                'success' => false,
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ] );
+        }
+    }
 }

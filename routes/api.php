@@ -17,6 +17,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\DetailTransaksiController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ExportNotaController;
 
 Route::middleware(['cors', 'json.response'])->group(function () {
 
@@ -24,11 +25,22 @@ Route::middleware(['cors', 'json.response'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
     Route::apiResource('users', UserController::class);
 
+
+});
     Route::apiResource('/category', CategoryController::class);
+    Route::get('/category-pdf', [CategoryController::class, 'exportPdf']);
+
 	Route::apiResource('roles', RoleController::class);
+
     Route::apiResource('/type', TypeController::class);
+    Route::get('/type-pdf', [TypeController::class, 'exportPdf']);
+
     Route::apiResource('/menu', MenuController::class);
+    Route::get('/menu-pdf', [MenuController::class, 'exportPdf']);
+
     Route::apiResource('/stok', StokController::class);
+    Route::get('/stok-pdf', [StokController::class, 'exportPdf']);
+
     Route::apiResource('/customer', CustomerController::class);
     Route::apiResource('/meja', MejaController::class);
     Route::apiResource('/user', UserController::class);
@@ -36,13 +48,13 @@ Route::middleware(['cors', 'json.response'])->group(function () {
 
     Route::apiResource('/payment_methods', PaymentMethodController::class);
     Route::apiResource('/transaksi', TransaksiController::class);
+    Route::get('/cetak-nota/{id}', [ExportNotaController::class, 'cetakNota']);
     Route::apiResource('/detail-transaksi', DetailTransaksiController::class);
-
-});
 
 Route::apiResource('/product', ProductController::class);
 Route::get('export-pdf', [ProductController::class, 'exportPdf']);
 Route::post('import-excel', [ProductController::class, 'importExcel']);
+Route::get('export-excel', [ProductController::class, 'exportExcel']);
 
 
 // Route::post('/login', [AuthController::class, 'login']);

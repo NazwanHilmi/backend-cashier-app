@@ -17,11 +17,11 @@ class ProductImport implements ToCollection, WithHeadingRow
         foreach ($collection as $row)
         {
             Product::create([
-                'name' => $row['nama_produk'],
-                'supplier_name' => $row['nama_supplier'],
-                'purchase_price' => $row['harga_beli'],
-                'sell_price' => $row['harga_jual'],
-                'stock' => $row['stok'],
+                'name' => $row[0],
+                'supplier_name' => $row[1],
+                'purchase_price' => $row[2],
+                'selling_price' => $row[3],
+                'stock' => $row[4],
             ]);
         }
     }

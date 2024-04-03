@@ -26,12 +26,12 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table
-                ->foreign('product_id')
-                    ->references('id')
-                    ->on('product')
-                    ->onUpdate('CASCADE')
-                    ->onDelete('CASCADE');
+            // $table
+            //     ->foreign('product_id')
+            //         ->references('id')
+            //         ->on('product')
+            //         ->onUpdate('CASCADE')
+            //         ->onDelete('CASCADE');
         });
     }
 

@@ -9,18 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('detail_transaksi', function (Blueprint $table) {
+        Schema::create('absensi', function (Blueprint $table) {
             $table->bigIncrements('id');
-			$table->double('sub_total');
-			$table->double('unit_price');
-			$table->integer('quantity');
-			$table->unsignedBigInteger('menu_id');
-			$table->unsignedBigInteger('transaksi_id');
-			// $table->unsignedBigInteger('product_id');
+            $table->string('nama');
+            $table->date('tanggal_masuk');
+            $table->time('waktu_masuk');
+            $table->enum('status', ['masuk', 'sakit', 'cuti']);
+            $table->time('waktu_keluar');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detail_transaksi');
+        Schema::dropIfExists('absensi');
     }
 };

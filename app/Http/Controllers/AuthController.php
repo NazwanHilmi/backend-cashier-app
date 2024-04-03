@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
 
-	public function login(Request $request) {
+	public function login(Request $request)
+	{
 		try {
 			$validator = Validator::make($request->all(), [
 				'email' => ['required', 'email'],
@@ -32,21 +37,20 @@ class AuthController extends Controller {
 
 			$credentials = $validator->validated();
 
-			if (!Auth::attempt($credentials)) {
+			$is_user = User::where('email', $credentials['email'])->first();
+
+			if (!$is_user || !Hash::check($credentials['password'], $is_user->password)) {
 				return response()->json([
-					'success' => false,
-					'message' => 'Email atau password salah.',
-				], 404);
+					'message' => 'Email atau password salah'
+				]);
 			}
 
-			$user = Auth::user();
-
-			$token = $user->createToken('auth-token')->accessToken;
+			$token = $is_user->createToken('auth-token')->accessToken;
 
 			return response()->json([
 				'success' => true,
-				'token' => $token,
-				'user' => $user,
+				'accessToken' => $token,
+				'name' => $is_user->name,
 			]);
 		} catch (Exception $e) {
 			return response()->json([
@@ -54,31 +58,18 @@ class AuthController extends Controller {
 				'message' => $e->getMessage(),
 			], 500);
 		}
-
 	}
 
-	public function logout(Request $request) {
+	public function logout(Request $request)
+	{
 		try {
-			if (Auth::guard('api')->check()) {
-				$accessToken = Auth::guard('api')->user()->token();
-				DB::table('oauth_refresh_tokens')
-					->where('access_token_id', $accessToken->id)
-					->update(['revoked' => true]);
-
-				$accessToken->revoke();
+			if (FacadesAuth::guard('api')->check()) {
+				$request->user()->token()->revoke();
 
 				return response()->json([
-					'success' => true,
-					'user' => null,
-					'message' => 'Logout berhasil',
+					'message' => 'Logout Berhasil',
 				]);
 			}
-
-			return response()->json([
-				'success' => false,
-				'user' => null,
-				'message' => 'Unauthorized',
-			], 401);
 		} catch (Exception $e) {
 			return response()->json([
 				'success' => false,
@@ -87,9 +78,10 @@ class AuthController extends Controller {
 		}
 	}
 
-	public function profile(Request $request) {
-		if (Auth::guard('api')->check()) {
-			$user = Auth::guard('api')->user();
+	public function profile(Request $request)
+	{
+		if (FacadesAuth::guard('api')->check()) {
+			$user = FacadesAuth::guard('api')->user();
 
 			return response()->json([
 				'success' => true,

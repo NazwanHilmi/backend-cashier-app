@@ -17,12 +17,13 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\DetailTransaksiController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\ExportNotaController;
 
 Route::middleware(['cors', 'json.response'])->group(function () {
 
 	Route::post('/auth/login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
     Route::apiResource('users', UserController::class);
 
 
@@ -50,6 +51,8 @@ Route::middleware(['cors', 'json.response'])->group(function () {
     Route::apiResource('/transaksi', TransaksiController::class);
     Route::get('/cetak-nota/{id}', [ExportNotaController::class, 'cetakNota']);
     Route::apiResource('/detail-transaksi', DetailTransaksiController::class);
+
+    Route::apiResource('/absensi', AbsensiController::class);
 
 Route::apiResource('/product', ProductController::class);
 Route::get('export-pdf', [ProductController::class, 'exportPdf']);

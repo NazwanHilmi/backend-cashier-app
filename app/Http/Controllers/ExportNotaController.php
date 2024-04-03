@@ -15,7 +15,7 @@ class ExportNotaController extends Controller
                 $data = Transaksi::findOrFail($id);
 
                 $pdf = Pdf::loadView( 'pdf.nota', compact( 'data' ) );
-                return $pdf->download('Type.pdf');
+                return $pdf->download('Nota.pdf');
 
 
             } catch ( Exception $e ) {

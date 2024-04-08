@@ -12,9 +12,14 @@ class Category extends Model
     protected $table = 'categories';
     protected $fillable = ['nama'];
 
-    protected $searchableFields = ['*'];
+    protected $searchableFields = ['nama'];
 
 	public function types() {
 		return $this->hasMany(Type::class);
 	}
+    
+    public function getSearchableFields()
+    {
+        return $this->searchableFields;
+    }
 }

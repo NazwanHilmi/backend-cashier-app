@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PemesananRequest;
@@ -40,7 +40,7 @@ class PemesananController extends Controller {
 		return new PemesananResource($pemesanan);
 	}
 
-	public function update(PemesananUpdateRequest $request, Pemesanan $pemesanan) {
+	public function update(PemesananRequest $request, Pemesanan $pemesanan) {
 
 		$validated = $request->validated();
 

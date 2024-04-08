@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TypeExport;
 use App\Http\Controllers\Controller;
 use App\Models\Type;
 use App\Http\Resources\TypeCollection;
 use App\Http\Resources\TypeResource;
 use App\Http\Requests\TypeRequest;
+use App\Imports\TypeImport;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\Facade\PDF;
+use Dompdf\Exception;
 use Maatwebsite\Excel\Facades\Excel;;
 
 class TypeController extends Controller
@@ -92,5 +95,23 @@ class TypeController extends Controller
                 'error' => $e->getMessage()
             ] );
         }
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new TypeExport, 'typeExcel.xlsx');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+    
+        $file = $request->file('file');
+    
+        Excel::import(new TypeImport, $file);
+    
+        return response()->json(['message' => 'Import data berhasil'], 200);
     }
 }

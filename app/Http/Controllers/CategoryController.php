@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Exports\CategoryExport;
+use App\Imports\CategoryImport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryCollection;
 use App\Http\Resources\CategoryResource;
-use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\Facade\PDF;
+use Dompdf\Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
@@ -100,5 +101,23 @@ class CategoryController extends Controller
                 'error' => $e->getMessage()
             ] );
         }
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new CategoryExport, 'categoryExcel.xlsx');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+    
+        $file = $request->file('file');
+    
+        Excel::import(new CategoryImport, $file);
+    
+        return response()->json(['message' => 'Import data berhasil'], 200);
     }
 }

@@ -15,7 +15,6 @@ use App\Http\Controllers\MejaController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\DetailTransaksiController;
-use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\ExportNotaController;
@@ -30,17 +29,27 @@ Route::middleware(['cors', 'json.response'])->group(function () {
 });
     Route::apiResource('/category', CategoryController::class);
     Route::get('/category-pdf', [CategoryController::class, 'exportPdf']);
+    Route::get('/category-excel', [CategoryController::class, 'exportExcel']);
+    Route::post('/category/import-excel', [CategoryController::class, 'importExcel']);
+
+
 
 	Route::apiResource('roles', RoleController::class);
 
     Route::apiResource('/type', TypeController::class);
     Route::get('/type-pdf', [TypeController::class, 'exportPdf']);
+    Route::get('/type-excel', [TypeController::class, 'exportExcel']);
+    Route::post('/type/import-excel', [TypeController::class, 'importExcel']);
 
     Route::apiResource('/menu', MenuController::class);
     Route::get('/menu-pdf', [MenuController::class, 'exportPdf']);
+    Route::get('/menu-excel', [MenuController::class, 'exportExcel']);
+    Route::post('/menu/import-excel', [MenuController::class, 'importExcel']);
 
     Route::apiResource('/stok', StokController::class);
     Route::get('/stok-pdf', [StokController::class, 'exportPdf']);
+    Route::get('/stok-excel', [StokController::class, 'exportExcel']);
+    Route::post('/stok/import-excel', [StokController::class, 'importExcel']);
 
     Route::apiResource('/customer', CustomerController::class);
     Route::apiResource('/meja', MejaController::class);

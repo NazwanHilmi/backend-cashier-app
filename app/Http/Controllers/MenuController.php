@@ -8,11 +8,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuCollection;
 use App\Http\Resources\MenuResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Maatwebsite\Excel\Facades\Excel;;
+use App\Exports\MenuExport;
+use App\Imports\MenuImport;
 
 class MenuController extends Controller
 {
@@ -57,11 +59,6 @@ class MenuController extends Controller
     public function show(Menu $menu)
     {
         return new MenuResource($menu);
-    }
-
-    public function edit(Menu $menu)
-    {
-        //
     }
 
     public function update(MenuRequest $request, Menu $menu)
@@ -118,5 +115,23 @@ class MenuController extends Controller
                 'error' => $e->getMessage()
             ] );
         }
+    }
+
+	public function exportExcel()
+    {
+        return Excel::download(new MenuExport, 'menuExcel.xlsx');
+    }
+
+	public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+    
+        $file = $request->file('file');
+    
+        Excel::import(new MenuImport, $file);
+    
+        return response()->json(['message' => 'Import data berhasil'], 200);
     }
 }

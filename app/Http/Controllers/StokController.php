@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\StokExport;
 use App\Models\Stok;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StokRequest;
 use App\Http\Resources\StokCollection;
 use App\Http\Resources\StokResource;
+use App\Imports\StokImport;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Maatwebsite\Excel\Facades\Excel;;
 
 class StokController extends Controller
@@ -93,5 +96,23 @@ class StokController extends Controller
                 'error' => $e->getMessage()
             ] );
         }
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new StokExport, 'stokExcel.xlsx');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+    
+        $file = $request->file('file');
+    
+        Excel::import(new StokImport, $file);
+    
+        return response()->json(['message' => 'Import data berhasil'], 200);
     }
 }

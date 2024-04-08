@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Imports;
+namespace App\Import;
 
-use App\Models\EntrustedProduct;
+use App\Models\Product;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;

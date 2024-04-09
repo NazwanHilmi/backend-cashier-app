@@ -16,9 +16,16 @@ class StokExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
 {
     public function collection()
     {
-        return Stok::select('stok.id', 'stok.jumlah', 'menu.nama_menu as menu')
+        $stock = Stok::select('stok.id', 'stok.jumlah', 'menu.nama_menu as menu')
         ->join('menu', 'stok.menu_id', '=', 'menu.id')
         ->get();
+
+        $stock = $stock->map(function ($stok, $index) {
+            $stok->id = $index + 1;
+            return $stok;
+        });
+
+        return $stock;
     }
 
     public function headings(): array
@@ -34,7 +41,7 @@ class StokExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
     {
         return [
             'A' => 15,
-            'B' => 25,          
+            'B' => 25,
             'C' => 25
         ];
     }

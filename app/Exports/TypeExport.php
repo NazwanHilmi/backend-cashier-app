@@ -16,9 +16,17 @@ class TypeExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
 {
     public function collection()
     {
-        return Type::select('type.id', 'type.nama_jenis', 'categories.nama as kategori')
-        ->join('categories', 'type.kategori_id', '=', 'categories.id')
-        ->get();
+        $types = Type::select('type.id', 'type.nama_jenis', 'categories.nama as kategori')
+                    ->join('categories', 'type.kategori_id', '=', 'categories.id')
+                    ->get();
+
+        // Menggunakan map untuk menambahkan nomor urut
+        $types = $types->map(function ($type, $index) {
+            $type->id = $index + 1; // Mengganti id dengan nomor urut
+            return $type;
+        });
+
+        return $types;
     }
 
     public function headings(): array
@@ -34,7 +42,7 @@ class TypeExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
     {
         return [
             'A' => 15,
-            'B' => 25,          
+            'B' => 25,
             'C' => 25
         ];
     }

@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Type;
+use App\Models\Customer;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -12,29 +12,31 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class TypeExport implements FromCollection, WithHeadings, ShouldAutoSize, WithColumnWidths, WithEvents
+class CustomerExport implements FromCollection, WithHeadings, ShouldAutoSize, WithColumnWidths, WithEvents
 {
+    /**
+    * @return \Illuminate\Support\Collection
+    */
     public function collection()
     {
-        $types = Type::select('type.id', 'type.nama_jenis', 'categories.nama as kategori')
-                    ->join('categories', 'type.kategori_id', '=', 'categories.id')
-                    ->get();
+        $customers =  Customer::select('id', 'name', 'email', 'phone', 'address')->get();
 
-        // Menggunakan map untuk menambahkan nomor urut
-        $types = $types->map(function ($type, $index) {
-            $type->id = $index + 1; // Mengganti id dengan nomor urut
-            return $type;
+        $customers = $customers->map(function ($customer, $index) {
+            $customer->id = $index + 1;
+            return $customer;
         });
 
-        return $types;
+        return $customers;
     }
 
     public function headings(): array
     {
         return [
             'No',
-            'Nama Jenis',
-            'Kategori'
+            'Nama',
+            'Email',
+            'Phone',
+            'Address'
         ];
     }
 
@@ -43,7 +45,9 @@ class TypeExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
         return [
             'A' => 15,
             'B' => 25,
-            'C' => 25
+            'C' => 30,
+            'D' => 30,
+            'E' => 25,
         ];
     }
 
@@ -51,7 +55,7 @@ class TypeExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
-                $event->sheet->getStyle('A1:C1')->applyFromArray([
+                $event->sheet->getStyle('A1:E1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                     ],
@@ -72,7 +76,7 @@ class TypeExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
                     ],
                 ]);
 
-                $event->sheet->getStyle('A2:C' . ($event->sheet->getHighestRow()))->applyFromArray([
+                $event->sheet->getStyle('A2:E' . ($event->sheet->getHighestRow()))->applyFromArray([
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                     ],

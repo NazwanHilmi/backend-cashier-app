@@ -16,9 +16,16 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
 {
     public function collection()
     {
-        return Menu::select('menu.id', 'menu.nama_menu', 'menu.harga', 'menu.image', 'menu.deskripsi', 'type.nama_jenis as type')
+        $menus = Menu::select('menu.id', 'menu.nama_menu', 'menu.harga', 'menu.image', 'menu.deskripsi', 'type.nama_jenis as type')
         ->join('type', 'menu.type_id', '=', 'type.id')
         ->get();
+
+        $menus = $menus->map(function ($menu, $index) {
+            $menu->id = $index + 1;
+            return $menu;
+        });
+
+        return $menu;
     }
 
     public function headings(): array
@@ -37,7 +44,7 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
     {
         return [
             'A' => 15,
-            'B' => 25,          
+            'B' => 25,
             'C' => 25,
             'D' => 25,
             'E' => 25,
@@ -49,7 +56,7 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
-                
+
                 $event->sheet->getStyle('A1:F1')->applyFromArray([
                     'font' => [
                         'bold' => true,

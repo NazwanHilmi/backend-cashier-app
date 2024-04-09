@@ -52,6 +52,10 @@ Route::middleware(['cors', 'json.response'])->group(function () {
     Route::post('/stok/import-excel', [StokController::class, 'importExcel']);
 
     Route::apiResource('/customer', CustomerController::class);
+    Route::get('/customer-pdf', [CustomerController::class, 'exportPdf']);
+    Route::get('/customer-excel', [CustomerController::class, 'exportExcel']);
+    Route::post('/customer/import-excel', [CustomerController::class, 'importExcel']);
+
     Route::apiResource('/meja', MejaController::class);
     Route::apiResource('/user', UserController::class);
     Route::apiResource('/karyawan', KaryawanController::class);

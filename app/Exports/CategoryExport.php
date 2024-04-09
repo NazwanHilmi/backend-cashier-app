@@ -16,7 +16,14 @@ class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
 {
     public function collection()
     {
-        return Category::select('id', 'nama')->get();
+        $categories =  Category::select('id', 'nama')->get();
+
+        $categories = $categories->map(function ($category, $index) {
+            $category->id = $index + 1;
+            return $category;
+        });
+
+        return $categories;
     }
 
     public function headings(): array
@@ -31,7 +38,7 @@ class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
     {
         return [
             'A' => 15,
-            'B' => 25,            
+            'B' => 25,
         ];
     }
 
@@ -62,7 +69,7 @@ class CategoryExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
 
                 $event->sheet->getStyle('A2:B' . ($event->sheet->getHighestRow()))->applyFromArray([
                     'alignment' => [
-                        'horizontal' => Alignment::HORIZONTAL_LEFT,
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
                     ],
                     'borders' => [
                         'outline' => [

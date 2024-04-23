@@ -11,17 +11,17 @@
         }
 
         .container {
-            max-width: 32rem; /* max-w-lg */
+            max-width: 32rem;
             margin-left: auto;
             margin-right: auto;
-            padding: 2rem; /* p-8 */
-            border: 1px solid #e5e7eb; /* border border-gray-300 */
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-lg */
-            border-radius: 0.5rem; /* rounded-lg */
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
         }
         .table {
-            width: 100%; /* w-full */
-            text-align: left; /* text-left */
+            width: 100%;
+            text-align: left;
         }
         .table-column{
             padding-bottom: 12px;

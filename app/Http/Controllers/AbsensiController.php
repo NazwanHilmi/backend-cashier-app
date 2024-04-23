@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AbsensiExport;
 use App\Models\Absensi;
 use App\Http\Requests\AbsensiRequest;
 use App\Http\Resources\AbsensiCollection;
 use App\Http\Resources\AbsensiResource;
+use App\Imports\AbsensiImport;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AbsensiController extends Controller
@@ -87,5 +90,23 @@ class AbsensiController extends Controller
                 'error' => $e->getMessage()
             ] );
         }
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new AbsensiExport, 'absensiExcel.xlsx');
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+    
+        $file = $request->file('file');
+    
+        Excel::import(new AbsensiImport, $file);
+    
+        return response()->json(['message' => 'Import data berhasil'], 200);
     }
 }

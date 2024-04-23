@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Menu;
+use App\Models\Transaksi;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -12,31 +12,31 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithColumnWidths, WithEvents
+class TransaksiExport implements FromCollection, WithHeadings, ShouldAutoSize, WithColumnWidths, WithEvents
 {
+
     public function collection()
     {
-        $menus = Menu::select('menu.id', 'menu.nama_menu', 'menu.harga', 'menu.image', 'menu.deskripsi', 'type.nama_jenis as type')
-        ->join('type', 'menu.type_id', '=', 'type.id')
+        $transaction = Transaksi::select('transaksi.id', 'transaksi.tanggal', 'transaksi.total_harga', 'payment_methods.name as payment' , 'transaksi.note')
+        ->join('payment_methods', 'transaksi.payment_method_id', '=', 'payment_methods.id')
         ->get();
 
-        $menu = $menus->map(function ($menu, $index) {
-            $menu->id = $index + 1;
-            return $menu;
+        $transaksi = $transaction->map(function ($transaksi, $index) {
+            $transaksi->id = $index + 1;
+            return $transaksi;
         });
 
-        return $menu;
+        return $transaksi;
     }
 
     public function headings(): array
     {
         return [
             'No',
-            'Nama Menu',
-            'Harga',
-            'Image',
-            'Deskripsi',
-            'Jenis'
+            'Tanggal',
+            'Total Harga',
+            'Pembayaran',
+            'Note',
         ];
     }
 
@@ -48,7 +48,6 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
             'C' => 25,
             'D' => 25,
             'E' => 25,
-            'F' => 25,
         ];
     }
 
@@ -57,7 +56,7 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
         return [
             AfterSheet::class => function(AfterSheet $event) {
 
-                $event->sheet->getStyle('A1:F1')->applyFromArray([
+                $event->sheet->getStyle('A1:E1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                     ],
@@ -78,7 +77,7 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
                     ],
                 ]);
 
-                $event->sheet->getStyle('A2:F' . ($event->sheet->getHighestRow()))->applyFromArray([
+                $event->sheet->getStyle('A2:E' . ($event->sheet->getHighestRow()))->applyFromArray([
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                     ],
@@ -92,4 +91,5 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
             },
         ];
     }
+
 }

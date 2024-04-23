@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentMethodRequest;
 use App\Http\Resources\PaymentMethodCollection;
 use App\Models\PaymentMethod;
+use Exception;
 
 class PaymentMethodController extends Controller
 {

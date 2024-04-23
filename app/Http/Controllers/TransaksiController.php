@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TransaksiExport;
 use App\Models\Transaksi;
 use App\Http\Requests\TransaksiRequest;
 use App\Http\Controllers\Controller;
@@ -10,9 +11,12 @@ use App\Http\Resources\TransaksiResource;
 use App\Models\Stok;
 use App\Models\DetailTransaksi;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\PDF;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class TransaksiController extends Controller
@@ -103,4 +107,26 @@ class TransaksiController extends Controller
 		]);
     }
 
+    public function exportPdf() {
+        try {
+
+            $data = Transaksi::all();
+
+            $pdf = Pdf::loadView( 'pdf.transaksi', compact( 'data' ) );
+            return $pdf->download('transaksi.pdf');
+
+
+        } catch ( Exception $e ) {
+            return response()->json( [
+                'success' => false,
+                'message' => 'Error',
+                'error' => $e->getMessage()
+            ] );
+        }
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new TransaksiExport, 'transaksiExcel.xlsx');
+    }
 }

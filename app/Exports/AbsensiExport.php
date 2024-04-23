@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Menu;
+use App\Models\Absensi;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -12,31 +12,30 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithColumnWidths, WithEvents
+class AbsensiExport implements FromCollection, WithHeadings, ShouldAutoSize, WithColumnWidths, WithEvents
 {
+
     public function collection()
     {
-        $menus = Menu::select('menu.id', 'menu.nama_menu', 'menu.harga', 'menu.image', 'menu.deskripsi', 'type.nama_jenis as type')
-        ->join('type', 'menu.type_id', '=', 'type.id')
-        ->get();
+        $attendance =  Absensi::select('id', 'nama', 'tanggal_masuk', 'waktu_masuk', 'status', 'waktu_keluar')->get();
 
-        $menu = $menus->map(function ($menu, $index) {
-            $menu->id = $index + 1;
-            return $menu;
+        $attendance = $attendance->map(function ($absent, $index) {
+            $absent->id = $index + 1;
+            return $absent;
         });
 
-        return $menu;
+        return $attendance;
     }
 
     public function headings(): array
     {
         return [
             'No',
-            'Nama Menu',
-            'Harga',
-            'Image',
-            'Deskripsi',
-            'Jenis'
+            'Nama',
+            'Tanggal Masuk',
+            'Waktu Masuk',
+            'Status',
+            'Waktu Keluar',
         ];
     }
 

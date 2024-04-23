@@ -61,11 +61,18 @@ Route::middleware(['cors', 'json.response'])->group(function () {
     Route::apiResource('/karyawan', KaryawanController::class);
 
     Route::apiResource('/payment_methods', PaymentMethodController::class);
+
     Route::apiResource('/transaksi', TransaksiController::class);
+    Route::get('/transaksi-pdf', [TransaksiController::class, 'exportPdf']);
+    Route::get('/transaksi-excel', [TransaksiController::class, 'exportExcel']);
+
     Route::get('/cetak-nota/{id}', [ExportNotaController::class, 'cetakNota']);
     Route::apiResource('/detail-transaksi', DetailTransaksiController::class);
 
     Route::apiResource('/absensi', AbsensiController::class);
+    Route::get('/absensi-pdf', [AbsensiController::class, 'exportPdf']);
+    Route::get('/absensi-excel', [AbsensiController::class, 'exportExcel']);
+    Route::get('/absensi/import-excel', [AbsensiController::class, 'importExcel']);
 
 Route::apiResource('/product', ProductController::class);
 Route::get('export-pdf', [ProductController::class, 'exportPdf']);

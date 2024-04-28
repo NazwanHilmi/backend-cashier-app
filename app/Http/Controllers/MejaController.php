@@ -41,7 +41,7 @@ class MejaController extends Controller
 		]);
     }
 
-	public function show(Request $request, Table $table): MejaResource {
+	public function show(Request $request, Meja $meja): MejaResource {
 
 		return new MejaResource($meja);
 	}

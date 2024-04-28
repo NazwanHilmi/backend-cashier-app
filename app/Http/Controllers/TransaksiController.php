@@ -23,7 +23,17 @@ class TransaksiController extends Controller
 {
     public function index(Request $request): TransaksiCollection
     {
-        $transaksi = Transaksi::all();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if ($startDate && $endDate) {
+            $startDateFormatted = date('Y-m-d', strtotime($startDate));
+            $endDateFormatted = date('Y-m-d', strtotime($endDate));
+
+            $transaksi = Transaksi::whereBetween('tanggal', [$startDateFormatted, $endDateFormatted])->get();
+        } else {
+            $transaksi = Transaksi::all();
+        }
 
         return new TransaksiCollection($transaksi);
     }
@@ -129,4 +139,5 @@ class TransaksiController extends Controller
     {
         return Excel::download(new TransaksiExport, 'transaksiExcel.xlsx');
     }
+
 }

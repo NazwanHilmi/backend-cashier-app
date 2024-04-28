@@ -9,15 +9,13 @@ use App\Http\Resources\AbsensiCollection;
 use App\Http\Resources\AbsensiResource;
 use App\Imports\AbsensiImport;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AbsensiController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $absensi = Absensi::all();
 
@@ -108,5 +106,15 @@ class AbsensiController extends Controller
         Excel::import(new AbsensiImport, $file);
     
         return response()->json(['message' => 'Import data berhasil'], 200);
+    }
+
+    public function dateReport(Request $request)
+    {
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+
+        $reportData = Absensi::where('tanggal_masuk', [$startDate, $endDate])->get();
+
+        return response()->json($reportData);
     }
 }

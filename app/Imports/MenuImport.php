@@ -20,7 +20,6 @@ class MenuImport implements ToCollection, WithHeadingRow
                 Menu::create([
                     'nama_menu' => $row['nama_menu'],
                     'harga' => $row['harga'],
-                    'image' => $row['image'],
                     'deskripsi' => $row['deskripsi'],
                     'type_id' => $type->id
                 ]);

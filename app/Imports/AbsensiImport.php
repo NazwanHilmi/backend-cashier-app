@@ -3,9 +3,11 @@
 namespace App\Imports;
 
 use App\Models\Absensi;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class AbsensiImport implements ToModel
+class AbsensiImport implements ToCollection, WithHeadingRow
 {
     /**
     * @param array $row
@@ -16,8 +18,12 @@ class AbsensiImport implements ToModel
     {
         foreach ($collection as $row) 
         {
-            Category::create([
-                'nama' => $row['nama_kategori'],
+            Absensi::create([
+                'nama' => $row['nama'],
+                'tanggal_masuk' => $row['tanggal_masuk'],
+                'waktu_masuk' => $row['waktu_masuk'],
+                'status' => $row['status'],
+                'waktu_keluar' => $row['waktu_keluar'],
             ]);
         }
     }

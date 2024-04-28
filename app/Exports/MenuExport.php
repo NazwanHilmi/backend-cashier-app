@@ -16,7 +16,7 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
 {
     public function collection()
     {
-        $menus = Menu::select('menu.id', 'menu.nama_menu', 'menu.harga', 'menu.image', 'menu.deskripsi', 'type.nama_jenis as type')
+        $menus = Menu::select('menu.id', 'menu.nama_menu', 'menu.harga', 'menu.deskripsi', 'type.nama_jenis as type')
         ->join('type', 'menu.type_id', '=', 'type.id')
         ->get();
 
@@ -34,7 +34,6 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
             'No',
             'Nama Menu',
             'Harga',
-            'Image',
             'Deskripsi',
             'Jenis'
         ];
@@ -48,7 +47,6 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
             'C' => 25,
             'D' => 25,
             'E' => 25,
-            'F' => 25,
         ];
     }
 
@@ -57,7 +55,7 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
         return [
             AfterSheet::class => function(AfterSheet $event) {
 
-                $event->sheet->getStyle('A1:F1')->applyFromArray([
+                $event->sheet->getStyle('A1:E1')->applyFromArray([
                     'font' => [
                         'bold' => true,
                     ],
@@ -78,7 +76,7 @@ class MenuExport implements FromCollection, WithHeadings, ShouldAutoSize, WithCo
                     ],
                 ]);
 
-                $event->sheet->getStyle('A2:F' . ($event->sheet->getHighestRow()))->applyFromArray([
+                $event->sheet->getStyle('A2:E' . ($event->sheet->getHighestRow()))->applyFromArray([
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                     ],

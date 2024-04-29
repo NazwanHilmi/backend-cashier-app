@@ -64,7 +64,9 @@ Route::apiResource('/payment_methods', PaymentMethodController::class);
 
 Route::apiResource('/grafik', DataController::class);
 Route::get('/grafik-income', [DataController::class, 'income']);
-Route::get('/grafik-countmenu', [DataController::class, 'countMenu']);
+Route::get('/grafik-soldmenu', [DataController::class, 'countMenu']);
+Route::get('/grafik-total', [DataController::class, 'totalMenu']);
+Route::get('/grafik-seller', [DataController::class, 'bestMenu']);
 
 Route::apiResource('/transaksi', TransaksiController::class);
 Route::get('/transaksi-pdf', [TransaksiController::class, 'exportPdf']);

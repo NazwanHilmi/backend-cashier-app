@@ -17,7 +17,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class CategoryController extends Controller
 {
 
-    public function index(Request $request)
+    public function index()
     {
         $category = Category::all();
 

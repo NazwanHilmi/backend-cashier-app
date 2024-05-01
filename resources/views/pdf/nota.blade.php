@@ -86,9 +86,6 @@
                             </tr>
                             <tr class="total">
                                 <td></td>
-                                <td class="payment">
-                                    Pembayaran: Rp -2000 <br />
-                                </td>
                             </tr>
                             <tr>
                                 <td>
